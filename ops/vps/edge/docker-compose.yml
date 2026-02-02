@@ -4,6 +4,10 @@ services:
     image: caddy:2
     container_name: t1-edge-caddy
     restart: unless-stopped
+    # Ensure ACME/Let's Encrypt DNS works even if Docker's default resolver is broken
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     ports:
       - "80:80"
       - "443:443"
