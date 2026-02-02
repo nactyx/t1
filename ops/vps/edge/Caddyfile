@@ -1,0 +1,5 @@
+nactyx.devourer.beget.tech, www.nactyx.devourer.beget.tech {
+  encode gzip zstd
+  root * /srv
+  file_server
+}
