@@ -1,0 +1,13 @@
+name: app-template
+services:
+  app:
+    image: traefik/whoami:v1.10
+    container_name: app-template-whoami
+    restart: unless-stopped
+    networks:
+      - edge
+    # no published ports; traffic comes from edge reverse proxy
+
+networks:
+  edge:
+    external: true

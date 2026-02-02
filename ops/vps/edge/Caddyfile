@@ -1,5 +1,13 @@
 nactyx.devourer.beget.tech, www.nactyx.devourer.beget.tech {
   encode gzip zstd
+
+  # Future apps (examples):
+  # - Path-based routing:
+  #   handle_path /whoami/* {
+  #     reverse_proxy app-template-whoami:80
+  #   }
+  # - Subdomain routing: create DNS record and add a new site block.
+
   root * /srv
   file_server
 }
