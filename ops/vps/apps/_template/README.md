@@ -9,6 +9,9 @@ This template shows how to run a Docker Compose application without publishing p
 1) Copy this template into `ops/vps/apps/<app-name>/`.
 2) Deploy to the VPS at `/opt/apps/<app-name>` (e.g. via `scripts/deploy-vps.ps1`).
 3) Add a `reverse_proxy` rule to `ops/vps/edge/Caddyfile`.
+4) Apply edge changes (Caddyfile is bind-mounted; Caddy does NOT auto-reload on file changes):
+   - `cd /opt/t1/edge && docker compose up -d`
+   - `docker exec t1-edge-caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile`
 
 ## reverse_proxy example
 If your compose project is `myapp`, the service is `app`, and it listens on 80, then in Caddyfile:

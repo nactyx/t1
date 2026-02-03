@@ -89,7 +89,9 @@ Process:
 3) Add routing in `ops/vps/edge/Caddyfile`:
    - path-based (e.g. `/myapp/*`)
    - or dedicated subdomain (recommended for real services)
-4) Reload edge: `cd /opt/t1/edge && docker compose up -d`.
+4) Apply edge changes (Caddyfile is bind-mounted; Caddy does NOT auto-reload on file changes):
+   - `cd /opt/t1/edge && docker compose up -d`
+   - `docker exec t1-edge-caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile`
 
 ## What I do automatically (routine)
 On “create project <name>” I typically:

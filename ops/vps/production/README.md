@@ -44,6 +44,12 @@ Edge is Docker Compose + Caddy (Let’s Encrypt).
   - `nactyx.devourer.beget.tech`
   - `www.nactyx.devourer.beget.tech`
 
+### Important: applying Caddyfile changes
+`Caddyfile` is bind-mounted into the container. Updating the file on disk does not automatically reload Caddy.
+After changing `Caddyfile`, run:
+- `cd /opt/t1/edge && docker compose up -d`
+- `docker exec t1-edge-caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile`
+
 Note: Caddy container uses `dns: 1.1.1.1, 8.8.8.8` because the default Docker resolver failed to resolve `acme-v02.api.letsencrypt.org`.
 
 ## Deploy
@@ -61,6 +67,7 @@ Minimal smoke checklist:
 - `sshd -t` (before ssh reload/restart)
 - `fail2ban-client status sshd`
 - `docker compose ps` for edge
+- (after any `Caddyfile` change) `docker exec t1-edge-caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile`
 - `curl -I https://nactyx.devourer.beget.tech/`
 
 ## Rollback (critical)
