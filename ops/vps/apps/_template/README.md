@@ -1,18 +1,18 @@
 # App template (behind edge)
-Этот шаблон показывает, как запускать приложение Docker Compose без публикации портов наружу.
+This template shows how to run a Docker Compose application without publishing ports to the public internet.
 
-## Идея
-- Edge (Caddy) слушает 80/443 на хосте.
-- Приложения подключаются к общей docker network `edge` и доступны edge-реверс-прокси по внутреннему DNS имени сервиса.
+## Concept
+- Edge (Caddy) listens on 80/443 on the host.
+- Apps attach to the shared docker network `edge` and are reachable by edge reverse proxy via internal DNS (service/container name).
 
-## Что нужно сделать для нового приложения
-1) Скопировать этот шаблон в `ops/vps/apps/<app-name>/`.
-2) Задеплоить на VPS в `/opt/apps/<app-name>` через `scripts/deploy-vps.ps1`.
-3) Добавить правило reverse_proxy в `ops/vps/edge/Caddyfile`.
+## Steps for a new application
+1) Copy this template into `ops/vps/apps/<app-name>/`.
+2) Deploy to the VPS at `/opt/apps/<app-name>` (e.g. via `scripts/deploy-vps.ps1`).
+3) Add a `reverse_proxy` rule to `ops/vps/edge/Caddyfile`.
 
-## Пример reverse_proxy
-Если ваш compose проект называется `myapp`, сервис внутри него называется `app`, и он слушает 80, то в Caddyfile:
-- `reverse_proxy myapp-app-1:80` (если используете дефолтные compose имена)
-- или задайте `container_name`/`hostname` и проксируйте по нему.
+## reverse_proxy example
+If your compose project is `myapp`, the service is `app`, and it listens on 80, then in Caddyfile:
+- `reverse_proxy myapp-app-1:80` (default compose naming)
+- or set `container_name`/`hostname` and proxy by that name.
 
-Практический вариант: в compose задать `container_name` и проксировать по нему.
+Practical recommendation: set `container_name` and proxy to it.

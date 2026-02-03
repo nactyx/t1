@@ -1,14 +1,15 @@
 # VPS (test)
-## Доступ
-- SSH только по ключам
-- Root-login по SSH отключён
-- Администрирование: `nacty` + `sudo`
+
+## Access
+- SSH key-only
+- Root SSH login disabled
+- Administration: `nacty` + `sudo`
 
 ## Fail2ban (sshd)
-Настроено так, чтобы минимизировать самоблокировки при смене IP:
+Configured to minimize self-lockouts when your IP changes:
 - maxretry=10
 - findtime=10m
 - bantime=2m
-- bantime.increment=true (с ограничением)
+- bantime.increment=true (with a cap)
 
-Конфиг: `/etc/fail2ban/jail.d/sshd.local`
+Config: `/etc/fail2ban/jail.d/sshd.local`

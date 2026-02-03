@@ -1,33 +1,34 @@
 # Server inventory
+
 ## VPS: test-1
 - IP: 89.40.204.19
-- Host alias (локально): `vps-test`
-- ОС: Ubuntu 24.04.3 LTS
-- Админ: `nacty` (passwordless sudo)
+- Host alias (local): `vps-test`
+- OS: Ubuntu 24.04.3 LTS
+- Admin: `nacty` (passwordless sudo)
 
-### Сетевые порты (ожидаемые)
+### Network ports (expected)
 - 22/tcp: SSH (UFW limit)
-- 80/tcp: HTTP (Caddy, редирект на HTTPS)
+- 80/tcp: HTTP (Caddy, redirect to HTTPS)
 - 443/tcp: HTTPS (Caddy)
 
-### Директории
+### Directories
 - `/opt/t1/edge` — edge stack
-- `/opt/apps` — будущие приложения (compose-проекты)
-- `/opt/edge` → symlink на `/opt/t1/edge`
+- `/opt/apps` — application stacks (compose projects)
+- `/opt/edge` → symlink to `/opt/t1/edge`
 
 ### Docker
 - Docker Engine: 29.2.1
 - Docker Compose plugin: v5.0.2
 
-### Развёрнутые стеки (Docker Compose)
+### Deployed stacks (Docker Compose)
 1) Edge (TLS)
-- Назначение: termination TLS + статика/реверс-прокси
-- Путь на сервере: `/opt/t1/edge`
-- Контейнер: `t1-edge-caddy`
-- Домены:
+- Purpose: TLS termination + static / reverse-proxy
+- Server path: `/opt/t1/edge`
+- Container: `t1-edge-caddy`
+- Domains:
   - nactyx.devourer.beget.tech
   - www.nactyx.devourer.beget.tech
 
-2) First deploy (HTTP-only) — исторически
-- Путь на сервере: `/opt/t1/first-deploy`
-- Стек был нужен для первого smoke deploy, сейчас выключен.
+2) First deploy (HTTP-only) — historical
+- Server path: `/opt/t1/first-deploy`
+- Used for initial smoke deploy; currently disabled.

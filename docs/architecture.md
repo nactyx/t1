@@ -1,34 +1,38 @@
-# Архитектура проекта
-## Контекст и цель
-Коротко: что делает система и зачем.
+# Project architecture
 
-## Границы системы
-Что входит/не входит.
+## Context and goal
+Short: what the system does and why it exists.
 
-## Компоненты
+## Engineering principles
+See `docs/principles.md` (required standard): speed without reinventing the wheel, flexibility without unnecessary dependencies, secrets never end up in git/image.
+
+## System boundaries
+What is in scope / out of scope.
+
+## Components
 - Frontend:
 - Backend/API:
 - Workers/Jobs:
 - Storage:
 
-## Интеграции
-- внешние сервисы
-- протоколы/ключевые контракты
+## Integrations
+- external services
+- protocols / key contracts
 
-## Окружения
+## Environments
 - local/dev
 - test/stage
 - prod
 
-## Деплой
-- как собираем
-- как запускаем (docker compose)
-- как проксируем через edge
+## Deploy
+- how we build
+- how we run (docker compose)
+- how we proxy behind the edge
 
-## Наблюдаемость
-- логи
-- метрики
-- алерты
+## Observability
+- logs
+- metrics
+- alerts
 
-## Риски и решения
-- перечисление 3-5 ключевых рисков и как их закрываем
+## Risks and decisions
+- list 3–5 key risks and how we address them

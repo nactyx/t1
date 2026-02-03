@@ -1,3 +1,7 @@
+api.devourer.beget.tech {
+  reverse_proxy baseapi-api:8000
+}
+
 nactyx.devourer.beget.tech, www.nactyx.devourer.beget.tech {
   encode gzip zstd
 

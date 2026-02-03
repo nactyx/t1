@@ -1,29 +1,30 @@
-# Правила работы с агентом
-## Как формулировать задачи
-В запросе всегда указывайте:
-1) Цель (что получить на выходе)
-2) Контекст (ветка/папка/сервис/сервер)
-3) Ограничения (что не трогать)
-4) Критерии готовности (какие проверки/тесты должны пройти)
+# Working with the agent
 
-## Канонические команды репозитория
-- CI (локально и в GitHub Actions):
+## How to describe tasks
+Always include:
+1) Goal (what the final outcome should be)
+2) Context (repo/branch/path/service/server)
+3) Constraints (what must not be touched)
+4) Definition of done (which checks/tests must pass)
+
+## Canonical repository commands
+- CI (local + GitHub Actions):
   - `pwsh ./scripts/ci.ps1`
 
-## Запуск нового проекта
-См. `PROJECT-PLAYBOOK.md` — это «чеклист по умолчанию», чтобы запускать новые проекты без конфликтов (git, CI, автотесты, docker, деплой за edge, документация).
+## Starting a new project
+See `PROJECT-PLAYBOOK.md` — the default playbook to start new projects without conflicts (git, CI, tests, docker, behind-edge deploy, docs).
 
-## Политика изменений и подтверждений
-### Что я делаю сам (без вашего участия)
-- Я выполняю команды в терминале сам (вам не нужно копировать/вводить команды).
-- Рутинные операции: исследование кода, правки файлов, запуск тестов/линтеров, подготовка коммитов/PR, деплой на test при согласованной схеме.
+## Change policy and confirmations
+### What I do without asking
+- I run terminal commands myself (you don’t need to copy/paste or execute commands).
+- Routine work: code investigation, file edits, running tests/linters, preparing commits/PRs, deploying to test when the scheme is already agreed.
 
-### Что считаю критичным (спрошу короткое «да/ок»)
-- доступ/сеть: SSH/firewall/порты
-- установка/удаление системных пакетов и сервисов на VPS
-- изменения edge routing, которые могут затронуть существующие домены
-- миграции/операции с данными
-- действия, которые нельзя быстро откатить
+### What I treat as critical (I’ll ask for a short “yes/ok”)
+- access/network: SSH/firewall/ports
+- installing/removing system packages or services on the VPS
+- edge routing changes that might affect existing domains
+- data migrations / data operations
+- changes that are not easy to roll back quickly
 
-## Примечание по безопасности
-Секреты/пароли не вставляются в чат. Для доступа используются SSH ключи, секреты — через менеджер/CI secrets.
+## Security note
+Never paste secrets/passwords into chat. Access uses SSH keys; secrets are stored in CI secrets and/or server environment.

@@ -1,84 +1,107 @@
-# Playbook: запуск нового проекта без конфликтов
-Цель: чтобы в любой момент можно было сказать «давай сделаем проект», и он стартовал предсказуемо: репозиторий, CI, автотесты, контейнеризация, деплой на VPS, документация.
+# Project playbook (no conflicts)
+Goal: at any moment we should be able to say “start a new project” and get a predictable baseline: repository, CI, tests, containerization, VPS deploy, documentation.
 
-## Принципы (чтобы проекты не мешали друг другу)
-1) Один проект = один репозиторий.
-2) Один проект = один compose stack на VPS в своей папке `/opt/apps/<project>`.
-3) Проекты НЕ публикуют порты наружу (никаких `ports:`), кроме edge.
-4) Внешний трафик (80/443) принимает edge (Caddy) и проксирует внутрь через docker network `edge`.
-5) Секреты не коммитим. На CI и на VPS — через secrets/env.
+## Principles (so projects don’t interfere)
+1) One project = one repository.
+2) One project = one compose stack on the VPS in its own directory: `/opt/apps/<project>`.
+3) Projects do NOT publish ports to the public internet (no `ports:`) except the edge stack.
+4) All external traffic (80/443) terminates at the edge (Caddy) and is proxied internally via the docker network `edge`.
+5) Secrets:
+   - never commit to git,
+   - never bake into a docker image,
+   - store in CI secrets and/or server environment.
+6) Rule #5 (dependencies): do not pull a “framework under the hood” preemptively. Every dependency must speed us up now and not lock us in later.
+7) Language policy: English-first for README/docs/code comments/issues/PRs.
 
-## Стандартная структура репозитория проекта
-Минимум:
-- `README.md` (как запустить локально и как деплоить)
-- `docs/architecture.md` (короткое описание архитектуры)
-- `scripts/ci.ps1` (локальная и CI проверка)
+The canonical principles text lives in `docs/principles.md` (in `t1`) and is copied into every new project.
+
+## Standard project repository structure
+Minimum:
+- `README.md` (how to run locally + how to deploy)
+- `docs/architecture.md` (short architecture / boundaries)
+- `docs/principles.md` (engineering principles + Rule #5)
+- `scripts/ci.ps1` (local + CI checks)
 - `.github/workflows/ci.yml` (CI)
-- `ops/` (инфра/деплой артефакты проекта, если нужно)
+- `ops/` (infra/deploy artifacts, if needed)
 
-## CI/CD (база)
+## Multi-repo + contracts (recommended standard)
+For a product, use separate repositories:
+- `<product>-api`
+- `<product>-web`
+- `<product>-mobile`
+- `<product>-contracts` (source of truth)
+
+### Code-first (API)
+- Implement the API in FastAPI (code-first) and generate OpenAPI from code.
+- OpenAPI is automatically published to `<product>-contracts` via GitHub Actions from the API repo.
+- Web/Mobile do not guess DTOs: they generate types/client from contracts.
+
+## CI/CD (baseline)
 ### CI
-Базовый pipeline:
-- форматирование/линт
-- тесты
-- сборка (если применимо)
-- артефакты (опционально)
+Baseline pipeline:
+- formatting/lint
+- tests
+- build (if applicable)
+- artifacts (optional)
 
-### CD (тестовый VPS)
-Модель по умолчанию:
-- manual deploy (workflow_dispatch) или deploy на merge в main (решаем на проект).
-- деплой выполняется через docker compose на VPS.
+### Dependency PR rule (required)
+If a PR adds/updates dependencies or changes base images (e.g. `pyproject.toml`, `package.json`, `go.mod`, Docker base image), the PR description must include the justification block (use-case/alternatives/exit plan/footprint/security). Canonical format is in `docs/principles.md` and enforced via `.github/pull_request_template.md`.
 
-## Автотесты
-Минимум для нового проекта:
-- 1 smoke-тест (проверка запуска)
-- 1 unit-тест
-- (для web/API) 1 интеграционный тест HTTP
+### CD (test VPS)
+Default model:
+- manual deploy (workflow_dispatch) or deploy on merge to main (per-project decision)
+- deploy is done via docker compose on the VPS
 
-## Архитектура (кратко и полезно)
-Шаблон файла: `docs/architecture.md`.
-Содержимое:
-- назначение и границы системы
-- основные компоненты
-- хранилища/очереди (если есть)
-- API/контракты
-- окружения (dev/test/prod)
-- риски и решения
+## Tests
+Minimum for a new project:
+- 1 smoke test (startup)
+- 1 unit test
+- (for web/API) 1 HTTP integration test
 
-## Контейнеризация (Docker)
-Для проекта готовим:
+## Architecture (short and useful)
+Template file: `docs/architecture.md`.
+Contents:
+- purpose and system boundaries
+- main components
+- storages/queues (if any)
+- APIs/contracts
+- environments (dev/test/prod)
+- risks and decisions
+
+## Containerization (Docker)
+Prepare:
 - `Dockerfile`
-- `docker-compose.yml` без публикации портов наружу
-- подключение к внешней сети `edge`
+- `docker-compose.yml` without public port publishing
+- attach to external network `edge`
 
-Правило:
-- если нужно HTTP — приложение слушает 80 внутри контейнера (или документируем порт) и edge проксирует.
+Rule:
+- if HTTP is needed, the app listens on an internal port, and edge proxies to it.
 
-## Деплой на VPS (боевой шаблон)
-Инварианты:
+## VPS deploy (production-like baseline)
+Invariants:
 - edge stack: `/opt/t1/edge` (Caddy+TLS)
-- проекты: `/opt/apps/<project>`
-- общая сеть: docker network `edge` (external)
+- projects: `/opt/apps/<project>`
+- shared network: docker network `edge` (external)
 
-Процесс:
-1) Создаём папку проекта в репо (например `ops/vps/apps/<project>`).
-2) Деплоим на VPS в `/opt/apps/<project>` через `scripts/deploy-vps.ps1`.
-3) Добавляем routing в `ops/vps/edge/Caddyfile`:
-   - path-based (например `/myapp/*`)
-   - или отдельный субдомен (рекомендовано для «боевых» сервисов)
-4) Перезапускаем edge: `cd /opt/t1/edge && docker compose up -d`.
+Process:
+1) Create a project deploy directory in the repo (e.g. `ops/vps/apps/<project>`).
+2) Deploy to the VPS at `/opt/apps/<project>` via `scripts/deploy-vps.ps1` (or equivalent).
+3) Add routing in `ops/vps/edge/Caddyfile`:
+   - path-based (e.g. `/myapp/*`)
+   - or dedicated subdomain (recommended for real services)
+4) Reload edge: `cd /opt/t1/edge && docker compose up -d`.
 
-## Что я делаю автоматически (рутина)
-По запросу «сделай проект <name>» я по умолчанию:
-- создаю/инициализирую репозиторий из шаблона `t1`
-- добавляю структуру и минимальные проверки
-- настраиваю CI
-- готовлю docker-compose для деплоя за edge
-- обновляю документацию (в репо и в `OneDrive/Projects/nactyx-infra.md`)
+## What I do automatically (routine)
+On “create project <name>” I typically:
+- create/init a repo from `t1`
+- add structure and minimal checks
+- configure CI
+- prepare docker-compose for behind-edge deploy
+- update docs (repo + `OneDrive/Projects/nactyx-infra.md`)
 
-## Что считается критичным (буду спрашивать короткое подтверждение)
-- изменения доступа: SSH/firewall/порты
-- установка/удаление системных пакетов/сервисов на VPS
-- изменения edge routing, которые могут положить существующие домены
-- миграции/операции с данными
-- продакшн-деплой (когда появится prod)
+## What is considered critical (I’ll ask for a short confirmation)
+- access changes: SSH/firewall/ports
+- installing/removing system packages/services on the VPS
+- edge routing changes that may affect existing domains
+- data migrations / data operations
+- production deploy (once prod exists)

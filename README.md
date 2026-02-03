@@ -1,16 +1,17 @@
 # t1
-Базовый репозиторий-шаблон для моих проектов (web/mobile/embedded) и автоматизации рутины.
+Template repository for my projects (web/mobile/embedded) and routine automation.
 
-## Быстрый старт
-1) Клонировать репозиторий.
-2) Запустить локальную проверку:
+## Quick start
+1) Clone the repository.
+2) Run local checks:
    - `pwsh ./scripts/ci.ps1`
 
-## Как мы работаем с агентом
-- `AGENTS.md` — правила взаимодействия и границы подтверждений.
-- `PROJECT-PLAYBOOK.md` — как стартовать новый проект без конфликтов (CI/тесты/docker/deploy/docs).
+## Working with the agent
+- `AGENTS.md` — interaction rules and what requires confirmation.
+- `PROJECT-PLAYBOOK.md` — how to start a new project without conflicts (CI/tests/docker/deploy/docs).
+- `docs/principles.md` — engineering principles + dependency policy (Rule #5).
 
-## Заметки по тестовому VPS
-Подключение идёт по SSH-ключам. Root-login по SSH отключён; администрирование выполняется через пользователя `nacty` + `sudo`.
+## Test VPS notes
+Access is SSH key-only. Root SSH login is disabled; administration is done via user `nacty` + `sudo`.
 
-Алиасы SSH задаются в `~/.ssh/config` (например `vps-test`).
+SSH host aliases live in `~/.ssh/config` (e.g. `vps-test`).

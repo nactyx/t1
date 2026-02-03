@@ -38,4 +38,4 @@ Write-Host "Deploying '$LocalAppDir' -> '${HostAlias}:$RemoteDir'"
 # Local health check on server
 & ssh $HostAlias "(curl -fsS http://127.0.0.1/ || wget -qO- http://127.0.0.1/) | head -n 8" | Out-Host
 
-Write-Host "Done. If порт 80 доступен извне: http://89.40.204.19/"
+Write-Host "Done. If port 80 is reachable externally: http://89.40.204.19/"
