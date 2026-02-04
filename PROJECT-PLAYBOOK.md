@@ -18,10 +18,20 @@ The canonical principles text lives in `docs/principles.md` (in `t1`) and is cop
 ## Standard project repository structure
 Minimum:
 - `README.md` (how to run locally + how to deploy)
+- `AGENTS.md` (agent interaction + what requires confirmation)
+- `CONTRIBUTING.md` (how to contribute)
+- `SECURITY.md` (how to report vulnerabilities)
+- `LICENSE` (explicit licensing baseline)
+- `docs/common-requirements.md` (engineering baseline)
 - `docs/architecture.md` (short architecture / boundaries)
 - `docs/principles.md` (engineering principles + Rule #5)
 - `scripts/ci.ps1` (local + CI checks)
 - `.github/workflows/ci.yml` (CI)
+- `.github/pull_request_template.md` (PR conventions, dependency justification block)
+- `.github/dependabot.yml` (at least GitHub Actions updates)
+- `.github/CODEOWNERS` (recommended)
+- `.github/ISSUE_TEMPLATE/*` (recommended)
+- `docs/templates/*` (optional doc templates: ADR/privacy/data/threat-model)
 - `ops/` (infra/deploy artifacts, if needed)
 
 ## Multi-repo + contracts (recommended standard)
@@ -96,10 +106,11 @@ Process:
 ## What I do automatically (routine)
 On “create project <name>” I typically:
 - create/init a repo from `t1`
+- copy the baseline docs and repo hygiene pack (`docs/*`, `SECURITY.md`, `CONTRIBUTING.md`, `.github/*`)
 - add structure and minimal checks
 - configure CI
 - prepare docker-compose for behind-edge deploy
-- update docs (repo + `OneDrive/Projects/nactyx-infra.md`)
+- update docs (repo + `nactyx-infra.md`)
 
 ## What is considered critical (I’ll ask for a short confirmation)
 - access changes: SSH/firewall/ports
